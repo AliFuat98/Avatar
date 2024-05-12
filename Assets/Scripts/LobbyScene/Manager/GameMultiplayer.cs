@@ -36,6 +36,22 @@ public class GameMultiplayer : NetworkBehaviour {
     OnPlayerDataNetworkListChange?.Invoke(this, EventArgs.Empty);
   }
 
+  private void Update() {
+    if (Input.GetKeyDown(KeyCode.P)) {
+      foreach (var playerData in playerDataNetworkList) {
+        PrintPlayerData(playerData);
+      }
+    }
+  }
+
+  private void PrintPlayerData(PlayerData playerData) {
+    Debug.Log("------");
+    Debug.Log($"clientId: {playerData.clientId}");
+    Debug.Log($"playerName: {playerData.playerName}");
+    Debug.Log($"playerId: {playerData.playerId}");
+    Debug.Log($"colorId: {playerData.colorId}");
+  }
+
   #region Start Host
 
   public void StartHost() {
@@ -51,9 +67,9 @@ public class GameMultiplayer : NetworkBehaviour {
   }
 
   private void NetworkManager_ConnectionApprovalCallback(
-     NetworkManager.ConnectionApprovalRequest connectionApprovalRequest,
-     NetworkManager.ConnectionApprovalResponse connectionApprovalResponse
-   ) {
+ NetworkManager.ConnectionApprovalRequest connectionApprovalRequest,
+ NetworkManager.ConnectionApprovalResponse connectionApprovalResponse
+) {
     if (SceneManager.GetActiveScene().name != Loader.Scene.CharacterSelectScene.ToString()) {
       connectionApprovalResponse.Approved = false;
       connectionApprovalResponse.Reason = "the game is already Starterd ";
@@ -70,13 +86,13 @@ public class GameMultiplayer : NetworkBehaviour {
   }
 
   private void NetworkManager_Server_OnClientConnectedCallback(ulong clientId) {
+    var colorId = GetFirstUnusedColorId();
     playerDataNetworkList.Add(new() {
       clientId = clientId,
-      colorId = GetFirstUnusedColorId(),
+      colorId = colorId,
+      playerName = GetPlayerName(),
+      playerId = AuthenticationService.Instance.PlayerId,
     });
-
-    SetPlayerNameServerRpc(GetPlayerName());
-    SetPlayerIdServerRpc(AuthenticationService.Instance.PlayerId);
   }
 
   private void NetworkManager_Server_OnClientDisconnectCallback(ulong clientId) {
@@ -97,8 +113,8 @@ public class GameMultiplayer : NetworkBehaviour {
   public void StartClient() {
     OnTryingToJoinGame?.Invoke(this, EventArgs.Empty);
 
-    NetworkManager.Singleton.OnClientDisconnectCallback += NetworkManager_Client_OnClientDisconnectCallback;
     NetworkManager.Singleton.OnClientConnectedCallback += NetworkManager_Client_OnClientConnectedCallback;
+    NetworkManager.Singleton.OnClientDisconnectCallback += NetworkManager_Client_OnClientDisconnectCallback;
 
     NetworkManager.Singleton.StartClient();
   }
@@ -108,26 +124,21 @@ public class GameMultiplayer : NetworkBehaviour {
   }
 
   private void NetworkManager_Client_OnClientConnectedCallback(ulong clientId) {
-    SetPlayerNameServerRpc(GetPlayerName());
-    SetPlayerIdServerRpc(AuthenticationService.Instance.PlayerId);
+    PlayerData playerData = new() {
+      playerId = AuthenticationService.Instance.PlayerId,
+      playerName = GetPlayerName()
+    };
+
+    SetPlayerDataServerRpc(playerData);
   }
 
   [ServerRpc(RequireOwnership = false)]
-  private void SetPlayerNameServerRpc(string playerName, ServerRpcParams serverRpcParams = default) {
+  private void SetPlayerDataServerRpc(PlayerData newPlayerData, ServerRpcParams serverRpcParams = default) {
     int playerDataIndex = GetPlayerDataIndexFromClientId(serverRpcParams.Receive.SenderClientId);
 
     PlayerData playerData = playerDataNetworkList[playerDataIndex];
-    playerData.playerName = playerName;
-
-    playerDataNetworkList[playerDataIndex] = playerData;
-  }
-
-  [ServerRpc(RequireOwnership = false)]
-  private void SetPlayerIdServerRpc(string playerId, ServerRpcParams serverRpcParams = default) {
-    int playerDataIndex = GetPlayerDataIndexFromClientId(serverRpcParams.Receive.SenderClientId);
-
-    PlayerData playerData = playerDataNetworkList[playerDataIndex];
-    playerData.playerId = playerId;
+    playerData.playerName = newPlayerData.playerName;
+    playerData.playerId = newPlayerData.playerId;
 
     playerDataNetworkList[playerDataIndex] = playerData;
   }
