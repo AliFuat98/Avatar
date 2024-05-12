@@ -113,13 +113,17 @@ public class GameMultiplayer : NetworkBehaviour {
   }
 
   private void NetworkManager_Server_OnClientDisconnectCallback(ulong clientId) {
-    for (int i = 0; i < playerDataNetworkList.Count; i++) {
-      PlayerData playerData = playerDataNetworkList[i];
-      if (playerData.clientId == clientId) {
-        // disconnected
+    try {
+      for (int i = 0; i < playerDataNetworkList.Count; i++) {
+        PlayerData playerData = playerDataNetworkList[i];
+        if (playerData.clientId == clientId) {
+          // disconnected
 
-        playerDataNetworkList.RemoveAt(i);
+          playerDataNetworkList.RemoveAt(i);
+        }
       }
+    } catch (Exception e) {
+      Debug.Log(e.Message);
     }
   }
 
