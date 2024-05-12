@@ -17,29 +17,28 @@ public class TeamSelect : NetworkBehaviour {
   }
 
   public override void OnNetworkSpawn() {
-    GameMultiplayer.Instance.OnPlayerDataNetworkListChange += test;
-
+    InitiateTeamDictionaryServerRpc();
   }
 
-  private void Start() {
-    GameMultiplayer.Instance.OnPlayerDataNetworkListChange += GameMultiplayer_OnPlayerDataNetworkListChange;
+  [ServerRpc(RequireOwnership = false)]
+  private void InitiateTeamDictionaryServerRpc(ServerRpcParams serverRpcParams = default) {
+    InitiateTeamDictionaryClientRpc(serverRpcParams.Receive.SenderClientId);
   }
 
-  private void GameMultiplayer_OnPlayerDataNetworkListChange(object sender, EventArgs e) {
-    Debug.Log("TEAM SELECT list changes in ");
+  [ClientRpc]
+  private void InitiateTeamDictionaryClientRpc(ulong clientId) {
+    teamDic.Add(clientId, (1, false));
+    OnTeamChanged?.Invoke(this, EventArgs.Empty);
   }
 
-  private void test(object sender, EventArgs e) {
-    Debug.Log("TEAM SELECT list changes in test");
-  }
-
-
-  private void Update() {
-    if (Input.GetKeyDown(KeyCode.Space)) {
-      foreach (var kvp in teamDic) {
-        Console.WriteLine($"Player ID: {kvp.Key}, Room ID: {kvp.Value.teamId}, Is Teller: {kvp.Value.isTeller}");
-      }
+  public void PrintTeamDictionary() {
+    foreach (var kvp in teamDic) {
+      Debug.Log($"client ID: {kvp.Key}, Room ID: {kvp.Value.teamId}, Is Teller: {kvp.Value.isTeller}");
     }
+  }
+
+  public Dictionary<ulong, (int teamId, bool isTeller)> GetTeamDic() {
+    return teamDic;
   }
 
   public void ChangeTeam(bool leftSite) {

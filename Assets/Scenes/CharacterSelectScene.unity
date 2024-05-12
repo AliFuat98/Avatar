@@ -262,7 +262,7 @@ PrefabInstance:
     - target: {fileID: 302006088490000281, guid: 8cf45e6ef52994545bf0c3790753e62b,
         type: 3}
       propertyPath: m_SizeDelta.y
-      value: 0
+      value: 158.1
       objectReference: {fileID: 0}
     - target: {fileID: 302006088490000281, guid: 8cf45e6ef52994545bf0c3790753e62b,
         type: 3}
@@ -273,6 +273,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_AnchoredPosition.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 517879345705446699, guid: 8cf45e6ef52994545bf0c3790753e62b,
+        type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 333.9
       objectReference: {fileID: 0}
     - target: {fileID: 670229459379205839, guid: 8cf45e6ef52994545bf0c3790753e62b,
         type: 3}
@@ -673,6 +678,12 @@ PrefabInstance:
 --- !u!224 &91461719 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 3354720629039606419, guid: 8cf45e6ef52994545bf0c3790753e62b,
+    type: 3}
+  m_PrefabInstance: {fileID: 91461718}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &91461720 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6910081846129621130, guid: 8cf45e6ef52994545bf0c3790753e62b,
     type: 3}
   m_PrefabInstance: {fileID: 91461718}
   m_PrefabAsset: {fileID: 0}
@@ -6473,6 +6484,12 @@ RectTransform:
     type: 3}
   m_PrefabInstance: {fileID: 1778345439}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1778345441 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6910081846129621130, guid: 8cf45e6ef52994545bf0c3790753e62b,
+    type: 3}
+  m_PrefabInstance: {fileID: 1778345439}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1804214429
 GameObject:
   m_ObjectHideFlags: 0
@@ -7027,6 +7044,13 @@ MonoBehaviour:
   rightTellerButton: {fileID: 0}
   lobbyNameText: {fileID: 157142466}
   lobbyCodeText: {fileID: 0}
+  teamContainers:
+  - {fileID: 4960288669231284705}
+  - {fileID: 91461720}
+  - {fileID: 1778345441}
+  playerNameTextPrefab: {fileID: 556138989825048303, guid: c5da80372712e764d8cb637630bc18ed,
+    type: 3}
+  heightPerChild: 70
 --- !u!1 &2022975710
 GameObject:
   m_ObjectHideFlags: 0
@@ -7944,6 +7968,12 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8cf45e6ef52994545bf0c3790753e62b, type: 3}
+--- !u!1 &4960288669231284705 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6910081846129621130, guid: 8cf45e6ef52994545bf0c3790753e62b,
+    type: 3}
+  m_PrefabInstance: {fileID: 4960288669231284704}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
