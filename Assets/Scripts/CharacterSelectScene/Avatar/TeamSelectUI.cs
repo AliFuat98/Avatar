@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using TMPro;
 using Unity.Netcode;
 using Unity.Services.Lobbies.Models;
@@ -36,15 +35,11 @@ public class TeamSelectUI : MonoBehaviour {
       TeamSelect.Instance.ChangeTeam(leftSite: false);
     });
 
-    StartCoroutine(WaitForTeamSelect());
+    GameMultiplayer.Instance.OnPlayerDataNetworkListChange += GameMultiplayer_OnPlayerDataNetworkListChange;
   }
 
-  private IEnumerator WaitForTeamSelect() {
-    while (TeamSelect.Instance == null) {
-      yield return null; // wait for a frame
-    }
-
-    TeamSelect.Instance.OnTeamChanged += TeamSelect_OnTeamChanged;
+  private void GameMultiplayer_OnPlayerDataNetworkListChange(object sender, EventArgs e) {
+    UpdateTeamUI();
   }
 
   private void Start() {
@@ -52,31 +47,27 @@ public class TeamSelectUI : MonoBehaviour {
       Lobby joinedLobby = GameLobby.Instance.GetJoinedLobby();
 
       lobbyNameText.text = $"Lobby Name: {joinedLobby.Name}";
+
+      UpdateTeamUI();
     } catch (Exception e) {
       Debug.Log(e.Message);
     }
   }
 
-  private void TeamSelect_OnTeamChanged(object sender, System.EventArgs e) {
-    UpdateTeamUI();
-  }
-
-  public void UpdateTeamUI() {
+  private void UpdateTeamUI() {
     ClearExistingTexts();
 
-    var teamDic = TeamSelect.Instance.GetTeamDic();
+    var dataList = GameMultiplayer.Instance.GetPlayerDataList();
 
-    // to find the proper height
     int[] childCountList = new int[3] { 0, 0, 0 };
 
-    foreach (var entry in teamDic) {
-      int teamId = entry.Value.teamId;
-      GameObject container = teamContainers[teamId];
+    foreach (PlayerData playerData in dataList) {
+      GameObject container = teamContainers[playerData.teamId];
 
       GameObject tmpInstance = Instantiate(playerNameTextPrefab, container.transform);
-      tmpInstance.GetComponentInChildren<TextMeshProUGUI>().text = "Client ID: " + entry.Key.ToString();
+      tmpInstance.GetComponentInChildren<TextMeshProUGUI>().text = playerData.playerName.ToString();
 
-      childCountList[teamId]++;
+      childCountList[playerData.teamId]++;
     }
 
     AdjustContainerHeights(childCountList);

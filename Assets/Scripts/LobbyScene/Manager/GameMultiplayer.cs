@@ -33,6 +33,21 @@ public class GameMultiplayer : NetworkBehaviour {
   }
 
   private void PlayerDataNetworkList_OnListChanged(NetworkListEvent<PlayerData> changeEvent) {
+    switch (changeEvent.Type) {
+      case NetworkListEvent<PlayerData>.EventType.Add:
+        Debug.Log("Player added to team list.");
+        break;
+
+      case NetworkListEvent<PlayerData>.EventType.Remove:
+        Debug.Log("Player removed from team list.");
+        break;
+
+      case NetworkListEvent<PlayerData>.EventType.Value:
+        Debug.Log("Player team data updated.");
+        break;
+        // Handle other cases as necessary
+    }
+
     OnPlayerDataNetworkListChange?.Invoke(this, EventArgs.Empty);
   }
 
@@ -90,6 +105,8 @@ public class GameMultiplayer : NetworkBehaviour {
     playerDataNetworkList.Add(new() {
       clientId = clientId,
       colorId = colorId,
+      teamId = 1,
+      isTeller = false,
       playerName = GetPlayerName(),
       playerId = AuthenticationService.Instance.PlayerId,
     });
@@ -146,6 +163,14 @@ public class GameMultiplayer : NetworkBehaviour {
   #endregion Start Client
 
   #region Player Data
+
+  public List<PlayerData> GetPlayerDataList() {
+    var result = new List<PlayerData>();
+    foreach (PlayerData playerData in playerDataNetworkList) {
+      result.Add(playerData);
+    }
+    return result;
+  }
 
   public PlayerData GetPlayerData() {
     return GetPlayerDataFromClientId(NetworkManager.Singleton.LocalClientId);

@@ -6,44 +6,16 @@ using UnityEngine;
 public class TeamSelect : NetworkBehaviour {
   public static TeamSelect Instance { get; private set; }
 
-  public event EventHandler OnTeamChanged;
-
-  Dictionary<ulong, (int teamId, bool isTeller)> teamDic;
-
   private void Awake() {
     Instance = this;
-
-    teamDic = new();
   }
 
   public override void OnNetworkSpawn() {
-    InitiateTeamDictionaryServerRpc();
-  }
-
-  [ServerRpc(RequireOwnership = false)]
-  private void InitiateTeamDictionaryServerRpc(ServerRpcParams serverRpcParams = default) {
-    InitiateTeamDictionaryClientRpc(serverRpcParams.Receive.SenderClientId);
-  }
-
-  [ClientRpc]
-  private void InitiateTeamDictionaryClientRpc(ulong clientId) {
-    teamDic.Add(clientId, (1, false));
-    OnTeamChanged?.Invoke(this, EventArgs.Empty);
-  }
-
-  public void PrintTeamDictionary() {
-    foreach (var kvp in teamDic) {
-      Debug.Log($"client ID: {kvp.Key}, Room ID: {kvp.Value.teamId}, Is Teller: {kvp.Value.isTeller}");
-    }
-  }
-
-  public Dictionary<ulong, (int teamId, bool isTeller)> GetTeamDic() {
-    return teamDic;
   }
 
   public void ChangeTeam(bool leftSite) {
     var id = NetworkManager.Singleton.LocalClientId;
-    var (teamId, isTeller) = teamDic[id];
+    var (teamId, isTeller) = (0, false);
     if (leftSite) {
       // left Site
 
@@ -73,7 +45,5 @@ public class TeamSelect : NetworkBehaviour {
 
   [ClientRpc]
   private void ChangeTeamClientRpc(ulong clintId, int teamID) {
-    teamDic[clintId] = (teamID, false);
-    OnTeamChanged?.Invoke(this, EventArgs.Empty);
   }
 }
