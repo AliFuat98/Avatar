@@ -63,6 +63,8 @@ public class GameMultiplayer : NetworkBehaviour {
     Debug.Log("------");
     Debug.Log($"clientId: {playerData.clientId}");
     Debug.Log($"playerName: {playerData.playerName}");
+    Debug.Log($"isTeller: {playerData.isTeller}");
+    Debug.Log($"teamId: {playerData.teamId}");
     Debug.Log($"playerId: {playerData.playerId}");
     Debug.Log($"colorId: {playerData.colorId}");
   }
@@ -282,6 +284,62 @@ public class GameMultiplayer : NetworkBehaviour {
   }
 
   #endregion Player Name
+
+  #region Player Team
+
+  public void ChangePlayerTeam(int teamId) {
+    var playerData = GetPlayerData();
+    if (playerData.teamId == teamId && !playerData.isTeller) {
+      // try to switch same team and it is not a teller
+      return;
+    }
+
+    ChangePlayerTeamServerRpc(teamId);
+  }
+
+  [ServerRpc(RequireOwnership = false)]
+  public void ChangePlayerTeamServerRpc(int teamId, ServerRpcParams serverRpcParams = default) {
+    int playerDataIndex = GetPlayerDataIndexFromClientId(serverRpcParams.Receive.SenderClientId);
+
+    PlayerData playerData = playerDataNetworkList[playerDataIndex];
+    playerData.teamId = teamId;
+    playerData.isTeller = false;
+
+    playerDataNetworkList[playerDataIndex] = playerData;
+  }
+
+  // be a teller
+  public void ChangeTeller(int teamId) {
+    if (!IsTellerEmpty(teamId)) {
+      return;
+    }
+
+    ChangeTellerServerRpc(teamId);
+  }
+
+  [ServerRpc(RequireOwnership = false)]
+  public void ChangeTellerServerRpc(int teamId, ServerRpcParams serverRpcParams = default) {
+    int playerDataIndex = GetPlayerDataIndexFromClientId(serverRpcParams.Receive.SenderClientId);
+
+    PlayerData playerData = playerDataNetworkList[playerDataIndex];
+    playerData.teamId = teamId;
+    playerData.isTeller = true;
+
+    playerDataNetworkList[playerDataIndex] = playerData;
+  }
+
+  private bool IsTellerEmpty(int teamId) {
+    foreach (PlayerData playerData in playerDataNetworkList) {
+      if (playerData.teamId == teamId && playerData.isTeller) {
+        // same team and there is a teller
+        return false;
+      }
+    }
+
+    return true;
+  }
+
+  #endregion Player Team
 
   public void KickPlayer(ulong clientId) {
     NetworkManager.Singleton.DisconnectClient(clientId);
