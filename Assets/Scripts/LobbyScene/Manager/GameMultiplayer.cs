@@ -65,8 +65,6 @@ public class GameMultiplayer : NetworkBehaviour {
     Debug.Log($"playerName: {playerData.playerName}");
     Debug.Log($"isTeller: {playerData.isTeller}");
     Debug.Log($"teamId: {playerData.teamId}");
-    Debug.Log($"playerId: {playerData.playerId}");
-    Debug.Log($"colorId: {playerData.colorId}");
   }
 
   #region Start Host
@@ -302,6 +300,12 @@ public class GameMultiplayer : NetworkBehaviour {
     int playerDataIndex = GetPlayerDataIndexFromClientId(serverRpcParams.Receive.SenderClientId);
 
     PlayerData playerData = playerDataNetworkList[playerDataIndex];
+
+    if (playerData.teamId == teamId && !playerData.isTeller) {
+      // try to switch same team and it is not a teller
+      return;
+    }
+
     playerData.teamId = teamId;
     playerData.isTeller = false;
 
@@ -322,6 +326,12 @@ public class GameMultiplayer : NetworkBehaviour {
     int playerDataIndex = GetPlayerDataIndexFromClientId(serverRpcParams.Receive.SenderClientId);
 
     PlayerData playerData = playerDataNetworkList[playerDataIndex];
+
+    if (playerData.teamId == teamId && playerData.isTeller) {
+      // same team and there is a teller
+      return;
+    }
+
     playerData.teamId = teamId;
     playerData.isTeller = true;
 

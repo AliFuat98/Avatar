@@ -1558,7 +1558,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &420854311
 RectTransform:
   m_ObjectHideFlags: 0
@@ -7284,8 +7284,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mainMenuButton: {fileID: 357134076}
   leftTeamButton: {fileID: 1180732204}
-  rightTeamButton: {fileID: 1975419801}
   middleTeamButton: {fileID: 484052602}
+  rightTeamButton: {fileID: 1975419801}
   leftTellerButton: {fileID: 499087265}
   rightTellerButton: {fileID: 958691228}
   leftTellerNameText: {fileID: 4960288669231284706}
