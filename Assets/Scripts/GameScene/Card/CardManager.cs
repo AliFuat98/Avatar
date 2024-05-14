@@ -10,6 +10,10 @@ public class CardManager : NetworkBehaviour {
   [SerializeField] private int BlueCardCount = 7;
   [SerializeField] private int BlackCardCount = 1;
   [SerializeField] private int PurpleCardCount = 2;
+
+  [SerializeField] private Transform CardContainer;
+  [SerializeField] private GameObject CardPrefab;
+
   public List<Card> cardList;
 
   private NetworkList<int> randomCardIndexes;
@@ -21,17 +25,11 @@ public class CardManager : NetworkBehaviour {
     randomCardWordIndexes = new();
   }
 
-  private void Update() {
-    if (Input.GetKeyDown(KeyCode.W)) {
-      foreach (var item in cardList) {
-        Debug.Log($"word: {item.Word} index: {item.PositionIndex}");
-      }
-    }
-  }
   public void StartClient() {
     // test için
     NetworkManager.Singleton.StartClient();
   }
+
   public void StartHost() {
     // test için
     NetworkManager.Singleton.StartHost();
@@ -42,6 +40,7 @@ public class CardManager : NetworkBehaviour {
     InitilizeCardList();
     ShuffleCards();
     AssignPositionIndexes();
+    SpawnCardPrefab();
   }
 
   private void InitilizeCardList() {
@@ -139,6 +138,13 @@ public class CardManager : NetworkBehaviour {
     int index = 0;
     foreach (var item in cardList) {
       item.SetPositionIndex(index);
+    }
+  }
+
+  private void SpawnCardPrefab() {
+    foreach (var card in cardList) {
+      GameObject cardPrefab = Instantiate(CardPrefab, CardContainer);
+      cardPrefab.GetComponent<CardSingleUI>().SetCard(card);
     }
   }
 }
