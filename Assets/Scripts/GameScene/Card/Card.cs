@@ -8,10 +8,10 @@ public class Card {
   public List<ulong> VoterClientIDlist { get; private set; }
   public bool IsOpen { get; private set; }
 
-  public Card(string word) {
-    Word = word.ToLower();
+  public Card(string word, Color color) {
+    Word = word.ToUpper();
 
-    Color = Color.white; // give default color
+    Color = color;
     VoterClientIDlist = new List<ulong>();
     IsOpen = false;
   }
@@ -23,30 +23,30 @@ public class Card {
 
 public class BlueCard : Card {
 
-  public BlueCard(string word) : base(word) {
+  public BlueCard(string word, Color color) : base(word, color) {
   }
 }
 
 public class RedCard : Card {
 
-  public RedCard(string word) : base(word) {
+  public RedCard(string word, Color color) : base(word, color) {
   }
 }
 
 public class BlackCard : Card {
 
-  public BlackCard(string word) : base(word) {
+  public BlackCard(string word, Color color) : base(word, color) {
   }
 }
 
 public class PurpleCard : Card {
 
-  public PurpleCard(string word) : base(word) {
+  public PurpleCard(string word, Color color) : base(word, color) {
   }
 }
 
 public class EmptyCard : Card {
 
-  public EmptyCard(string word) : base(word) {
+  public EmptyCard(string word, Color color) : base(word, color) {
   }
 }

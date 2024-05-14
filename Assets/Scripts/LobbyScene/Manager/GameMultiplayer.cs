@@ -349,6 +349,27 @@ public class GameMultiplayer : NetworkBehaviour {
     return true;
   }
 
+  public List<string> GetPlayerNamesWithTeamId(int teamId) {
+    List<string> names = new();
+    foreach (PlayerData playerData in playerDataNetworkList) {
+      if (playerData.teamId == teamId && !playerData.isTeller) {
+        names.Add(playerData.playerName.ToString());
+      }
+    }
+
+    return names;
+  }
+
+  public string GetTellerNameWithTeamId(int teamId) {
+    foreach (PlayerData playerData in playerDataNetworkList) {
+      if (playerData.teamId == teamId && playerData.isTeller) {
+        return playerData.playerName.ToString();
+      }
+    }
+
+    return string.Empty;
+  }
+
   #endregion Player Team
 
   public void KickPlayer(ulong clientId) {

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
@@ -9,7 +10,13 @@ public class CardManager : NetworkBehaviour {
   [SerializeField] private int redCardCount = 8;
   [SerializeField] private int blueCardCount = 7;
   [SerializeField] private int blackCardCount = 1;
-  [SerializeField] private int burpleCardCount = 2;
+  [SerializeField] private int purpleCardCount = 2;
+
+  [SerializeField] private Color emptyCardColor;
+  [SerializeField] private Color redCardColor;
+  [SerializeField] private Color blueCardColor;
+  [SerializeField] private Color blackCardColor;
+  [SerializeField] private Color purpleCardColor;
 
   [SerializeField] private Transform cardContainer;
   [SerializeField] private GameObject cardPrefab;
@@ -71,30 +78,30 @@ public class CardManager : NetworkBehaviour {
     int wordlistIndex = 0;
     for (int i = 0; i < emptyCardCount; i++) {
       int index = randomCardWordIndexes[wordlistIndex];
-      cardList.Add(new EmptyCard($"{wordList[index]}"));
+      cardList.Add(new EmptyCard($"{wordList[index]}", emptyCardColor));
       wordlistIndex++;
     }
 
     for (int i = 0; i < redCardCount; i++) {
       int index = randomCardWordIndexes[wordlistIndex];
-      cardList.Add(new RedCard($"{wordList[index]}"));
+      cardList.Add(new RedCard($"{wordList[index]}", redCardColor));
       wordlistIndex++;
     }
 
     for (int i = 0; i < blueCardCount; i++) {
       int index = randomCardWordIndexes[wordlistIndex];
-      cardList.Add(new BlueCard($"{wordList[index]}"));
+      cardList.Add(new BlueCard($"{wordList[index]}", blueCardColor));
       wordlistIndex++;
     }
 
     for (int i = 0; i < blackCardCount; i++) {
       int index = randomCardWordIndexes[wordlistIndex];
-      cardList.Add(new BlackCard($"{wordList[index]}"));
+      cardList.Add(new BlackCard($"{wordList[index]}", blackCardColor));
       wordlistIndex++;
     }
-    for (int i = 0; i < burpleCardCount; i++) {
+    for (int i = 0; i < purpleCardCount; i++) {
       int index = randomCardWordIndexes[wordlistIndex];
-      cardList.Add(new PurpleCard($"{wordList[index]}"));
+      cardList.Add(new PurpleCard($"{wordList[index]}", purpleCardColor));
       wordlistIndex++;
     }
   }
