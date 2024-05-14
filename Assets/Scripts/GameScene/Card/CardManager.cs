@@ -5,16 +5,18 @@ using UnityEngine;
 public class CardManager : NetworkBehaviour {
   public static CardManager Instance { get; private set; }
 
-  [SerializeField] private int EmptyCardCount = 7;
-  [SerializeField] private int RedCardCount = 8;
-  [SerializeField] private int BlueCardCount = 7;
-  [SerializeField] private int BlackCardCount = 1;
-  [SerializeField] private int PurpleCardCount = 2;
+  [SerializeField] private int emptyCardCount = 7;
+  [SerializeField] private int redCardCount = 8;
+  [SerializeField] private int blueCardCount = 7;
+  [SerializeField] private int blackCardCount = 1;
+  [SerializeField] private int burpleCardCount = 2;
 
-  [SerializeField] private Transform CardContainer;
-  [SerializeField] private GameObject CardPrefab;
+  [SerializeField] private Transform cardContainer;
+  [SerializeField] private GameObject cardPrefab;
 
   public List<Card> cardList;
+  private List<string> wordList;
+  private int totalCardCount = 25;
 
   private NetworkList<int> randomCardIndexes;
   private NetworkList<int> randomCardWordIndexes;
@@ -37,81 +39,62 @@ public class CardManager : NetworkBehaviour {
 
   public override void OnNetworkSpawn() {
     Debug.Log("on network spawn");
+    ReadWordListFromFile();
+    ChooseWordIndices();
     InitilizeCardList();
     ShuffleCards();
     AssignPositionIndexes();
     SpawnCardPrefab();
   }
 
-  private void InitilizeCardList() {
-    List<string> wordList = new() {
-      "ali 0",
-      "veli 0",
-      "deli 0",
-      "keli 0",
-      "cali 0",
-      "ali 1",
-      "veli 1",
-      "deli 1",
-      "keli 1",
-      "cali 1",
-      "ali 2",
-      "veli 2",
-      "deli 2",
-      "keli 2",
-      "cali 2",
-      "ali 3",
-      "veli 3",
-      "deli 3",
-      "keli 3",
-      "cali 3",
-      "ali 4",
-      "veli 4",
-      "deli 4",
-      "keli 4",
-      "cali 4",
-    };
+  private void ReadWordListFromFile() {
+    TextAsset wordData = Resources.Load<TextAsset>("words");
+    if (wordData != null) {
+      wordList = new List<string>(wordData.text.Split('\n'));
+    }
+  }
 
+  private void ChooseWordIndices() {
     // chose 25 word
     if (IsServer) {
-      var randomNumbers = ShuffleLogic.GetShuffleListNumbers(wordList.Count);
-      foreach (var item in randomNumbers) {
-        randomCardWordIndexes.Add(item);
-      }
+      var randomNumbers = ShuffleLogic.GetRandomIndices(wordList.Count);
 
-      wordList = ShuffleLogic.ShuffleList(wordList, randomNumbers);
-    } else {
-      List<int> randomNumberList = new();
-      foreach (var index in randomCardWordIndexes) {
-        randomNumberList.Add(index);
+      // get the first 25 of the indicies
+      for (int i = 0; i < totalCardCount; i++) {
+        randomCardWordIndexes.Add(randomNumbers[i]);
       }
-
-      wordList = ShuffleLogic.ShuffleList(wordList, randomNumberList);
     }
+  }
 
+  private void InitilizeCardList() {
     cardList = new List<Card>();
     int wordlistIndex = 0;
-    for (int i = 0; i < EmptyCardCount; i++) {
-      cardList.Add(new EmptyCard($"{wordList[wordlistIndex]}"));
+    for (int i = 0; i < emptyCardCount; i++) {
+      int index = randomCardWordIndexes[wordlistIndex];
+      cardList.Add(new EmptyCard($"{wordList[index]}"));
       wordlistIndex++;
     }
 
-    for (int i = 0; i < RedCardCount; i++) {
-      cardList.Add(new RedCard($"{wordList[wordlistIndex]}"));
+    for (int i = 0; i < redCardCount; i++) {
+      int index = randomCardWordIndexes[wordlistIndex];
+      cardList.Add(new RedCard($"{wordList[index]}"));
       wordlistIndex++;
     }
 
-    for (int i = 0; i < BlueCardCount; i++) {
-      cardList.Add(new BlueCard($"{wordList[wordlistIndex]}"));
+    for (int i = 0; i < blueCardCount; i++) {
+      int index = randomCardWordIndexes[wordlistIndex];
+      cardList.Add(new BlueCard($"{wordList[index]}"));
       wordlistIndex++;
     }
 
-    for (int i = 0; i < BlackCardCount; i++) {
-      cardList.Add(new BlackCard($"{wordList[wordlistIndex]}"));
+    for (int i = 0; i < blackCardCount; i++) {
+      int index = randomCardWordIndexes[wordlistIndex];
+      cardList.Add(new BlackCard($"{wordList[index]}"));
       wordlistIndex++;
     }
-    for (int i = 0; i < PurpleCardCount; i++) {
-      cardList.Add(new PurpleCard($"{wordList[wordlistIndex]}"));
+    for (int i = 0; i < burpleCardCount; i++) {
+      int index = randomCardWordIndexes[wordlistIndex];
+      cardList.Add(new PurpleCard($"{wordList[index]}"));
       wordlistIndex++;
     }
   }
@@ -143,8 +126,8 @@ public class CardManager : NetworkBehaviour {
 
   private void SpawnCardPrefab() {
     foreach (var card in cardList) {
-      GameObject cardPrefab = Instantiate(CardPrefab, CardContainer);
-      cardPrefab.GetComponent<CardSingleUI>().SetCard(card);
+      GameObject cardGameObject = Instantiate(cardPrefab, cardContainer);
+      cardGameObject.GetComponent<CardSingleUI>().SetCard(card);
     }
   }
 }
