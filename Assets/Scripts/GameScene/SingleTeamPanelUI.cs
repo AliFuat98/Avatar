@@ -1,8 +1,9 @@
 using System;
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
-public class TeamPanelUI : MonoBehaviour {
+public class SingleTeamPanelUI : MonoBehaviour {
   [SerializeField] private int teamId = -1;
   [SerializeField] private TextMeshProUGUI tellerNameText;
 
@@ -11,7 +12,7 @@ public class TeamPanelUI : MonoBehaviour {
   [SerializeField] private int heightPerChild = 70;
 
   private void Awake() {
-    GameMultiplayer.Instance.OnPlayerDataNetworkListChange += GameMultiplayer_OnPlayerDataNetworkListChange;
+    //GameMultiplayer.Instance.OnPlayerDataNetworkListChange += GameMultiplayer_OnPlayerDataNetworkListChange;
   }
 
   private void GameMultiplayer_OnPlayerDataNetworkListChange(object sender, EventArgs e) {
@@ -29,10 +30,10 @@ public class TeamPanelUI : MonoBehaviour {
   private void UpdatePanelUI() {
     ClearExistingTexts();
 
-    var playerNames = GameMultiplayer.Instance.GetPlayerNamesWithTeamId(teamId);
-    //List<string> playerNames = new() {
-    //  "ali","ebrar","yusuf",
-    //};
+    //var playerNames = GameMultiplayer.Instance.GetPlayerNamesWithTeamId(teamId);
+    List<string> playerNames = new() {
+      "ali","ebrar","yusuf",
+    };
 
     int childCount = 0;
     foreach (var name in playerNames) {
@@ -41,8 +42,8 @@ public class TeamPanelUI : MonoBehaviour {
       childCount++;
     }
 
-    var tellerName = GameMultiplayer.Instance.GetTellerNameWithTeamId(teamId);
-    //string tellerName = "Ahmet";
+    //var tellerName = GameMultiplayer.Instance.GetTellerNameWithTeamId(teamId);
+    string tellerName = "Ahmet";
     tellerNameText.text = tellerName;
 
     AdjustContainerHeights(childCount);
