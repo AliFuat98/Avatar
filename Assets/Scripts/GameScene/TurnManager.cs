@@ -6,8 +6,8 @@ public class TurnManager : NetworkBehaviour {
 
   public event EventHandler OnTurnChanged;
 
-  private bool isFirstTeamTurn = true;
-  private bool isTellerTurn = true;
+  public bool isFirstTeamTurn { get; private set; } = true;
+  public bool isTellerTurn { get; private set; } = true;
 
   private void Awake() {
     Instance = this;
@@ -17,25 +17,31 @@ public class TurnManager : NetworkBehaviour {
     // First team Teller ==> First team Finder
     if (isFirstTeamTurn && isTellerTurn) {
       isTellerTurn = !isTellerTurn;
+      OnTurnChanged?.Invoke(this, EventArgs.Empty);
+      return;
     }
 
     // First team Finder ==> Second Team Teller
     if (isFirstTeamTurn && !isTellerTurn) {
       isFirstTeamTurn = !isFirstTeamTurn;
       isTellerTurn = !isTellerTurn;
+      OnTurnChanged?.Invoke(this, EventArgs.Empty);
+      return;
     }
 
     // Second Team Teller ==> Second Team Finder
     if (!isFirstTeamTurn && isTellerTurn) {
       isTellerTurn = !isTellerTurn;
+      OnTurnChanged?.Invoke(this, EventArgs.Empty);
+      return;
     }
 
     // Second Team Finder ==> First team Teller
     if (!isFirstTeamTurn && !isTellerTurn) {
       isFirstTeamTurn = !isFirstTeamTurn;
       isTellerTurn = !isTellerTurn;
+      OnTurnChanged?.Invoke(this, EventArgs.Empty);
+      return;
     }
-
-    OnTurnChanged?.Invoke(this, EventArgs.Empty);
   }
 }

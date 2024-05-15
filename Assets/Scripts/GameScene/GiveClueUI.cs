@@ -7,7 +7,6 @@ public class GiveClueUI : MonoBehaviour {
   [SerializeField] private Button sendButton;
   [SerializeField] private TMP_InputField clueInput;
   [SerializeField] private TMP_InputField clueCountInput;
-  private int teamId;
 
   private void Awake() {
     closeButton.onClick.AddListener(() => {
@@ -31,12 +30,14 @@ public class GiveClueUI : MonoBehaviour {
       return;
     }
 
-    ChatManager.Instance.AddNewClue(teamId, $"{clueInput.text} {clueCount}");
+    if (clueInput.text == string.Empty) {
+      return;
+    }
+
+    ChatManager.Instance.AddNewClue( $"{clueInput.text} {clueCount}");
     TurnManager.Instance.EndTurn();
     gameObject.SetActive(false);
   }
 
-  public void SetTeamId(int teamId) {
-    this.teamId = teamId;
-  }
+
 }
