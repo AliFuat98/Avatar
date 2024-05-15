@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
@@ -128,6 +127,7 @@ public class CardManager : NetworkBehaviour {
     int index = 0;
     foreach (var item in cardList) {
       item.SetPositionIndex(index);
+      index++;
     }
   }
 
@@ -136,5 +136,20 @@ public class CardManager : NetworkBehaviour {
       GameObject cardGameObject = Instantiate(cardPrefab, cardContainer);
       cardGameObject.GetComponent<CardSingleUI>().SetCard(card);
     }
+  }
+
+  public void Vote(int cardIndex) {
+    VoteServerRpc(cardIndex);
+  }
+
+  [ServerRpc(RequireOwnership = false)]
+  private void VoteServerRpc(int cardIndex, ServerRpcParams serverRpcParams = default) {
+    VoteClientRpc(cardIndex, serverRpcParams.Receive.SenderClientId);
+  }
+
+  [ClientRpc]
+  private void VoteClientRpc(int cardIndex, ulong senderClientId) {
+    CardSingleUI cardSingleUI = cardContainer.GetChild(cardIndex).GetComponent<CardSingleUI>();
+    cardSingleUI.ClientVote(senderClientId);
   }
 }

@@ -5,19 +5,31 @@ public class Card {
   public string Word { get; private set; }
   public int PositionIndex { get; private set; }
   public Color Color { get; private set; }
-  public List<ulong> VoterClientIDlist { get; private set; }
+  public HashSet<ulong> VoterClientIDlist { get; private set; }
   public bool IsOpen { get; private set; }
 
   public Card(string word, Color color) {
     Word = word.ToUpper();
 
     Color = color;
-    VoterClientIDlist = new List<ulong>();
+    VoterClientIDlist = new HashSet<ulong>();
     IsOpen = false;
   }
 
   public void SetPositionIndex(int index) {
     PositionIndex = index;
+  }
+
+  public bool CanVote(ulong clientId) {
+    return !VoterClientIDlist.Contains(clientId);
+  }
+
+  public void AddNewVoter(ulong clientId) {
+    VoterClientIDlist.Add(clientId);
+  }
+
+  public void DeleteVoter(ulong clientId) {
+    VoterClientIDlist.Remove(clientId);
   }
 }
 
