@@ -26,21 +26,21 @@ public class TurnManager : NetworkBehaviour {
     turnText.text = "Red Team Teller";
   }
 
-  public void DecreaseCardCount() {
-    var index = IsFirstTeamTurn ? 0 : 2;
-    teamIdRemaningCardCount[index]--;
-    OnRemaningCardCountChanged?.Invoke(this, EventArgs.Empty);
-
-    if (teamIdRemaningCardCount[index] <= 0) {
+  public void DecreaseCardCount(int teamId) {
+    teamIdRemaningCardCount[teamId]--;
+ 
+    if (teamIdRemaningCardCount[teamId] <= 0) {
       MessageManager.Instance.SetTextWithoutTime(IsFirstTeamTurn ? "red team won" : "blue team won");
       isGameOver = true;
     }
+
+    OnRemaningCardCountChanged?.Invoke(this, EventArgs.Empty);
   }
 
   public void BlackCard() {
+    isGameOver = true;
     OnRemaningCardCountChanged?.Invoke(this, EventArgs.Empty);
     MessageManager.Instance.SetTextWithoutTime(IsFirstTeamTurn ? "blue team won" : "red team won");
-    isGameOver = true;
   }
 
   public int GetRemainingCardCount(int teamId) {

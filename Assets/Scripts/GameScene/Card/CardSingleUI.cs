@@ -32,9 +32,11 @@ public class CardSingleUI : MonoBehaviour {
       }
 
       ChooseCard();
-
-      TurnManager.Instance.OnTurnChanged += TurnManager_OnTurnChanged;
     });
+  }
+
+  private void Start() {
+    TurnManager.Instance.OnTurnChanged += TurnManager_OnTurnChanged;
   }
 
   private void TurnManager_OnTurnChanged(object sender, EventArgs e) {
@@ -84,6 +86,10 @@ public class CardSingleUI : MonoBehaviour {
     ShowCard();
     card.ClientChoose();
     ChosenCardImage.SetActive(true);
+
+    // ali fuat
+    //var playerData = GameMultiplayer.Instance.GetPlayerDataFromClientId(senderClientId);
+    //MessageManager.Instance.SetText($"{card.Word} is choosed by {playerData.playerName}");
   }
 
   public void Vote() {

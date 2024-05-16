@@ -59,7 +59,7 @@ public class BlueCard : Card {
   }
 
   public override void ClientChoose() {
-    TurnManager.Instance.DecreaseCardCount();
+    TurnManager.Instance.DecreaseCardCount(2);
   }
 
   public override int GetTeamId() {
@@ -73,7 +73,7 @@ public class RedCard : Card {
   }
 
   public override void ClientChoose() {
-    TurnManager.Instance.DecreaseCardCount();
+    TurnManager.Instance.DecreaseCardCount(0);
   }
 
   public override int GetTeamId() {
@@ -97,13 +97,13 @@ public class PurpleCard : Card {
   }
 
   public override void ClientChoose() {
-    TurnManager.Instance.DecreaseCardCount();
+    int teamId = TurnManager.Instance.IsFirstTeamTurn ? 0 : 2;
+    TurnManager.Instance.DecreaseCardCount(teamId);
   }
 
   public override int GetTeamId() {
     return -2;
   }
-
 }
 
 public class EmptyCard : Card {
