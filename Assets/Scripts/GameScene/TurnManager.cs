@@ -15,6 +15,7 @@ public class TurnManager : NetworkBehaviour {
   public bool IsFirstTeamTurn { get; private set; } = true;
   public bool IsTellerTurn { get; private set; } = true;
   private int[] teamIdRemaningCardCount { get; set; }
+  public bool isGameOver { get; private set; } = false;
 
   private void Awake() {
     Instance = this;
@@ -31,9 +32,15 @@ public class TurnManager : NetworkBehaviour {
     OnRemaningCardCountChanged?.Invoke(this, EventArgs.Empty);
 
     if (teamIdRemaningCardCount[index] <= 0) {
-      // ali fuat
-      MessageManager.Instance.SetText(IsFirstTeamTurn ? "red team won" : "blue team won");
+      MessageManager.Instance.SetTextWithoutTime(IsFirstTeamTurn ? "red team won" : "blue team won");
+      isGameOver = true;
     }
+  }
+
+  public void BlackCard() {
+    OnRemaningCardCountChanged?.Invoke(this, EventArgs.Empty);
+    MessageManager.Instance.SetTextWithoutTime(IsFirstTeamTurn ? "blue team won" : "red team won");
+    isGameOver = true;
   }
 
   public int GetRemainingCardCount(int teamId) {

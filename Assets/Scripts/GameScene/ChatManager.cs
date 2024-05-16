@@ -19,6 +19,10 @@ public class ChatManager : NetworkBehaviour {
     Instance = this;
 
     giveClueButton.onClick.AddListener(() => {
+      if (TurnManager.Instance.isGameOver) {
+        return;
+      }
+
       var playerData = GameMultiplayer.Instance.GetPlayerData();
       if (!playerData.isTeller) {
         MessageManager.Instance.SetText("you are not a teller");
@@ -34,6 +38,10 @@ public class ChatManager : NetworkBehaviour {
     });
 
     endTurnButton.onClick.AddListener(() => {
+      if (TurnManager.Instance.isGameOver) {
+        return;
+      }
+
       if (!TurnManager.Instance.IsMyTurn()) {
         MessageManager.Instance.SetText("Not your turn");
         return;

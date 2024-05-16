@@ -30,4 +30,8 @@ public class MessageManager : MonoBehaviour {
     yield return new WaitForSeconds(5);
     messageText.text = string.Empty;
   }
+
+  public void SetTextWithoutTime(string text) {
+    messageText.text = text;
+  }
 }

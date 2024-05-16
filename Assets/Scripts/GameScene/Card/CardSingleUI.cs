@@ -18,13 +18,12 @@ public class CardSingleUI : MonoBehaviour {
 
   private void Awake() {
     choooseCardButton.onClick.AddListener(() => {
-      try {
-        // ali fuat
-        if (!TurnManager.Instance.IsMyTurn()) {
-          MessageManager.Instance.SetText("it is not your turn for card vote");
-          return;
-        }
-      } catch (Exception) {
+      if (TurnManager.Instance.isGameOver) {
+        return;
+      }
+      if (!TurnManager.Instance.IsMyTurn()) {
+        MessageManager.Instance.SetText("it is not your turn for card vote");
+        return;
       }
 
       if (card.IsOpen) {
@@ -51,8 +50,6 @@ public class CardSingleUI : MonoBehaviour {
     card.SetCloseColor(CardBackground.color);
 
     var playerData = GameMultiplayer.Instance.GetPlayerData();
-    // ali fuat
-    //bool isteller = false;
     if (playerData.isTeller) {
       ShowCard();
     }
@@ -68,11 +65,24 @@ public class CardSingleUI : MonoBehaviour {
 
   public void ChooseCard() {
     CardManager.Instance.ChooseCard(card.PositionIndex);
+
+    // end turn
+    int teamId = TurnManager.Instance.IsFirstTeamTurn ? 0 : 2;
+    int chosenCardTeamId = card.GetTeamId();
+
+    if (chosenCardTeamId == -2) {
+      // purple card chosen
+      return;
+    }
+
+    if (teamId != chosenCardTeamId) {
+      TurnManager.Instance.EndTurn();
+    }
   }
 
   public void ClientChooseCard(ulong senderClientId) {
     ShowCard();
-    card.Choose();
+    card.ClientChoose();
     ChosenCardImage.SetActive(true);
   }
 

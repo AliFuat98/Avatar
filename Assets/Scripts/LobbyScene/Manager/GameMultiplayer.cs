@@ -6,7 +6,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class GameMultiplayer : NetworkBehaviour {
-  public const int MAX_PLAYER_AMOUNT = 4;
+  public const int MAX_PLAYER_AMOUNT = 10;
   private const string PLAYER_PREFS_PLAYER_NAME_MULTIPLAYER = "playerNameMultiplayer";
 
   public static GameMultiplayer Instance { get; private set; }

@@ -51,18 +51,8 @@ public class SingleTeamPanelUI : MonoBehaviour {
   private void UpdatePanelUI() {
     ClearExistingTexts();
 
-    // ali fuat check kaldýrýlabilir
-    List<string> playerNames;
-    string localPlayerName;
-    if (GameMultiplayer.Instance != null) {
-      playerNames = GameMultiplayer.Instance.GetPlayerNamesWithTeamId(teamId);
-      localPlayerName = GameMultiplayer.Instance.GetPlayerName();
-    } else {
-      playerNames = new() {
-        "testali","testebrar","testyusuf",
-      };
-      localPlayerName = "test";
-    }
+    List<string> playerNames = GameMultiplayer.Instance.GetPlayerNamesWithTeamId(teamId);
+    string localPlayerName = GameMultiplayer.Instance.GetPlayerName();
 
     int childCount = 0;
     foreach (var name in playerNames) {
@@ -76,13 +66,7 @@ public class SingleTeamPanelUI : MonoBehaviour {
       childCount++;
     }
 
-    // ali fuat
-    string tellerName;
-    if (GameMultiplayer.Instance != null) {
-      tellerName = GameMultiplayer.Instance.GetTellerNameWithTeamId(teamId);
-    } else {
-      tellerName = "testAhmet";
-    }
+    string tellerName = GameMultiplayer.Instance.GetTellerNameWithTeamId(teamId);
 
     if (tellerName == localPlayerName) {
       tellerNameText.text = tellerName + " (*)";

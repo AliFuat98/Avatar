@@ -33,16 +33,6 @@ public class CardManager : NetworkBehaviour {
     randomCardWordIndexes = new();
   }
 
-  public void StartClient() {
-    // ali fuat
-    NetworkManager.Singleton.StartClient();
-  }
-
-  public void StartHost() {
-    // ali fuat
-    NetworkManager.Singleton.StartHost();
-  }
-
   public override void OnNetworkSpawn() {
     ReadWordListFromFile();
     ChooseWordIndices();

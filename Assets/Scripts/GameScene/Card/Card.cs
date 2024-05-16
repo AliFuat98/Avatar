@@ -17,7 +17,11 @@ public class Card {
     IsOpen = false;
   }
 
-  public virtual void Choose() {
+  public virtual void ClientChoose() {
+  }
+
+  public virtual int GetTeamId() {
+    return -1;
   }
 
   public void SetCloseColor(Color color) {
@@ -54,8 +58,12 @@ public class BlueCard : Card {
   public BlueCard(string word, Color color) : base(word, color) {
   }
 
-  public override void Choose() {
+  public override void ClientChoose() {
     TurnManager.Instance.DecreaseCardCount();
+  }
+
+  public override int GetTeamId() {
+    return 2;
   }
 }
 
@@ -64,8 +72,12 @@ public class RedCard : Card {
   public RedCard(string word, Color color) : base(word, color) {
   }
 
-  public override void Choose() {
+  public override void ClientChoose() {
     TurnManager.Instance.DecreaseCardCount();
+  }
+
+  public override int GetTeamId() {
+    return 0;
   }
 }
 
@@ -74,9 +86,8 @@ public class BlackCard : Card {
   public BlackCard(string word, Color color) : base(word, color) {
   }
 
-  public override void Choose() {
-    // ali fuat
-    MessageManager.Instance.SetText("black card is chosen");
+  public override void ClientChoose() {
+    TurnManager.Instance.BlackCard();
   }
 }
 
@@ -85,18 +96,18 @@ public class PurpleCard : Card {
   public PurpleCard(string word, Color color) : base(word, color) {
   }
 
-  public override void Choose() {
+  public override void ClientChoose() {
     TurnManager.Instance.DecreaseCardCount();
   }
+
+  public override int GetTeamId() {
+    return -2;
+  }
+
 }
 
 public class EmptyCard : Card {
 
   public EmptyCard(string word, Color color) : base(word, color) {
-  }
-
-  public override void Choose() {
-    // ali fuat
-    MessageManager.Instance.SetText("empty card is chosen");
   }
 }
