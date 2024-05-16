@@ -9,22 +9,62 @@ public class CardSingleUI : MonoBehaviour {
   [SerializeField] GameObject voterCountContainer;
   [SerializeField] TextMeshProUGUI voterCountText;
 
+  [SerializeField] Button choooseCardButton;
+
   private Card card;
 
-  public void SetCard(Card card) {
+  private void Awake() {
+    choooseCardButton.onClick.AddListener(() => {
+      ChooseCard();
+    });
+  }
+
+  public void InitilizeCard(Card card) {
     this.card = card;
-    //wordText.text = card.Word;
-    wordText.text = card.PositionIndex.ToString();
+    wordText.text = card.Word;
+
+    // store the color
+    card.SetCloseColor(CardBackground.color);
 
     //var playerData = GameMultiplayer.Instance.GetPlayerData();
-    bool isteller = true;
+    bool isteller = false;
     if (isteller) {
-      CardBackground.color = card.Color;
-      wordText.color = Color.white;
+      ShowCard();
     }
   }
 
+  private void ShowCard() {
+    CardBackground.color = card.Color;
+    wordText.color = Color.white;
+    choooseCardButton.gameObject.SetActive(false);
+    card.OpenCard();
+    voterCountContainer.SetActive(false);
+  }
+
+  public void ChooseCard() {
+    // sýra bizde deðilse return
+
+    // seçebilir mi
+
+    // show card
+    CardManager.Instance.ChooseCard(card.PositionIndex);
+
+    // give the point to the team
+  }
+
+  public void ClientChooseCard(ulong senderClientId) {
+    // show the color of the card everyone
+    ShowCard();
+
+    // give the point to the team
+    TurnManager.Instance.DecreaseCardCount();
+  }
+
   public void Vote() {
+    if (card.IsOpen) {
+      return;
+    }
+
     // sýra bizde deðilse return
 
     CardManager.Instance.Vote(card.PositionIndex);

@@ -134,7 +134,7 @@ public class CardManager : NetworkBehaviour {
   private void SpawnCardPrefab() {
     foreach (var card in cardList) {
       GameObject cardGameObject = Instantiate(cardPrefab, cardContainer);
-      cardGameObject.GetComponent<CardSingleUI>().SetCard(card);
+      cardGameObject.GetComponent<CardSingleUI>().InitilizeCard(card);
     }
   }
 
@@ -151,5 +151,20 @@ public class CardManager : NetworkBehaviour {
   private void VoteClientRpc(int cardIndex, ulong senderClientId) {
     CardSingleUI cardSingleUI = cardContainer.GetChild(cardIndex).GetComponent<CardSingleUI>();
     cardSingleUI.ClientVote(senderClientId);
+  }
+
+  public void ChooseCard(int cardIndex) {
+    ChooseCardServerRpc(cardIndex);
+  }
+
+  [ServerRpc(RequireOwnership = false)]
+  private void ChooseCardServerRpc(int cardIndex, ServerRpcParams serverRpcParams = default) {
+    ChooseCardClientRpc(cardIndex, serverRpcParams.Receive.SenderClientId);
+  }
+
+  [ClientRpc]
+  private void ChooseCardClientRpc(int cardIndex, ulong senderClientId) {
+    CardSingleUI cardSingleUI = cardContainer.GetChild(cardIndex).GetComponent<CardSingleUI>();
+    cardSingleUI.ClientChooseCard(senderClientId);
   }
 }

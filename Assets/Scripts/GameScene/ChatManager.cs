@@ -24,7 +24,7 @@ public class ChatManager : MonoBehaviour {
   }
 
   public void AddNewClue(string clue) {
-    var isFirstTeamTurn = TurnManager.Instance.isFirstTeamTurn;
+    var isFirstTeamTurn = TurnManager.Instance.IsFirstTeamTurn;
 
     if (isFirstTeamTurn) {
       firstTeamclueCount++;

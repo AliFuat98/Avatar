@@ -533,6 +533,7 @@ MonoBehaviour:
   CardBackground: {fileID: 1651036838948916358}
   voterCountContainer: {fileID: 7911042738138242513}
   voterCountText: {fileID: 7530594037307519463}
+  choooseCardButton: {fileID: 1210471223012648627}
 --- !u!1 &7468885020461618789
 GameObject:
   m_ObjectHideFlags: 0

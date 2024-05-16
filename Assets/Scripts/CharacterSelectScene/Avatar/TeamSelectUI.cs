@@ -15,6 +15,8 @@ public class TeamSelectUI : MonoBehaviour {
   [SerializeField] private Button leftTellerButton;
   [SerializeField] private Button rightTellerButton;
 
+  [SerializeField] private Button startGameButton;
+
   [SerializeField] private TextMeshProUGUI lobbyNameText;
   [SerializeField] private TextMeshProUGUI lobbyCodeText;
 
@@ -44,6 +46,11 @@ public class TeamSelectUI : MonoBehaviour {
 
     rightTellerButton.onClick.AddListener(() => {
       GameMultiplayer.Instance.ChangeTeller(2);
+    });
+
+    startGameButton.onClick.AddListener(() => {
+      GameLobby.Instance.DeleteLobby();
+      Loader.LoadNetwork(Loader.Scene.GameScene);
     });
   }
 

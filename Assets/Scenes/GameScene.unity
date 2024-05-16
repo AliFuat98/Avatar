@@ -2665,7 +2665,7 @@ PrefabInstance:
     - target: {fileID: -9193410263199856699, guid: 8cf45e6ef52994545bf0c3790753e62b,
         type: 3}
       propertyPath: teamId
-      value: 0
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 302006088490000281, guid: 8cf45e6ef52994545bf0c3790753e62b,
         type: 3}
@@ -2691,6 +2691,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_AnchoredPosition.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1985588327342257455, guid: 8cf45e6ef52994545bf0c3790753e62b,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3354720629039606419, guid: 8cf45e6ef52994545bf0c3790753e62b,
         type: 3}
@@ -2948,6 +2953,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_AnchoredPosition.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1985588327342257455, guid: 8cf45e6ef52994545bf0c3790753e62b,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2225024073417931262, guid: 8cf45e6ef52994545bf0c3790753e62b,
+        type: 3}
+      propertyPath: m_text
+      value: test isim
       objectReference: {fileID: 0}
     - target: {fileID: 3354720629039606419, guid: 8cf45e6ef52994545bf0c3790753e62b,
         type: 3}

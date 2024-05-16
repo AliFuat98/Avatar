@@ -5,6 +5,7 @@ public class Card {
   public string Word { get; private set; }
   public int PositionIndex { get; private set; }
   public Color Color { get; private set; }
+  public Color CloseColor { get; private set; }
   public HashSet<ulong> VoterClientIDlist { get; private set; }
   public bool IsOpen { get; private set; }
 
@@ -14,6 +15,10 @@ public class Card {
     Color = color;
     VoterClientIDlist = new HashSet<ulong>();
     IsOpen = false;
+  }
+
+  public void SetCloseColor(Color color) {
+    CloseColor = color;
   }
 
   public void SetPositionIndex(int index) {
@@ -30,6 +35,10 @@ public class Card {
 
   public void DeleteVoter(ulong clientId) {
     VoterClientIDlist.Remove(clientId);
+  }
+
+  public void OpenCard() {
+    IsOpen = true;
   }
 }
 

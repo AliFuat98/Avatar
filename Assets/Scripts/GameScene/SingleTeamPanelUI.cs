@@ -6,13 +6,18 @@ using UnityEngine;
 public class SingleTeamPanelUI : MonoBehaviour {
   [SerializeField] private int teamId = -1;
   [SerializeField] private TextMeshProUGUI tellerNameText;
+  [SerializeField] private TextMeshProUGUI remaningCardCountText;
 
   [SerializeField] private GameObject teamNameContainer;
   [SerializeField] private GameObject playerNameTextPrefab;
   [SerializeField] private int heightPerChild = 70;
 
   private void Awake() {
-    //GameMultiplayer.Instance.OnPlayerDataNetworkListChange += GameMultiplayer_OnPlayerDataNetworkListChange;
+    try {
+      GameMultiplayer.Instance.OnPlayerDataNetworkListChange += GameMultiplayer_OnPlayerDataNetworkListChange;
+    } catch (Exception e) {
+      Debug.Log(e.Message);
+    }
   }
 
   private void GameMultiplayer_OnPlayerDataNetworkListChange(object sender, EventArgs e) {
@@ -25,15 +30,35 @@ public class SingleTeamPanelUI : MonoBehaviour {
       return;
     }
     UpdatePanelUI();
+
+    // card count
+    if (TurnManager.Instance != null) {
+      TurnManager.Instance.OnRemaningCardCountChanged += TurnManager_OnRemaningCardCountChanged;
+      remaningCardCountText.gameObject.SetActive(true);
+      UpdateRemainingCardCount();
+    } else {
+      remaningCardCountText.gameObject.SetActive(false);
+    }
+  }
+
+  private void TurnManager_OnRemaningCardCountChanged(object sender, EventArgs e) {
+    UpdateRemainingCardCount();
+  }
+
+  private void UpdateRemainingCardCount() {
+    remaningCardCountText.text = $"({TurnManager.Instance.GetRemainingCardCount(teamId)})";
   }
 
   private void UpdatePanelUI() {
     ClearExistingTexts();
-
-    //var playerNames = GameMultiplayer.Instance.GetPlayerNamesWithTeamId(teamId);
-    List<string> playerNames = new() {
-      "ali","ebrar","yusuf",
-    };
+    List<string> playerNames;
+    if (GameMultiplayer.Instance != null) {
+      playerNames = GameMultiplayer.Instance.GetPlayerNamesWithTeamId(teamId);
+    } else {
+      playerNames = new() {
+        "testali","testebrar","testyusuf",
+      };
+    }
 
     int childCount = 0;
     foreach (var name in playerNames) {
@@ -42,8 +67,12 @@ public class SingleTeamPanelUI : MonoBehaviour {
       childCount++;
     }
 
-    //var tellerName = GameMultiplayer.Instance.GetTellerNameWithTeamId(teamId);
-    string tellerName = "Ahmet";
+    string tellerName;
+    if (GameMultiplayer.Instance != null) {
+      tellerName = GameMultiplayer.Instance.GetTellerNameWithTeamId(teamId);
+    } else {
+      tellerName = "testAhmet";
+    }
     tellerNameText.text = tellerName;
 
     AdjustContainerHeights(childCount);

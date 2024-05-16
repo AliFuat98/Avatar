@@ -7093,6 +7093,7 @@ MonoBehaviour:
   rightTeamButton: {fileID: 1975419801}
   leftTellerButton: {fileID: 499087265}
   rightTellerButton: {fileID: 958691228}
+  startGameButton: {fileID: 1734448926}
   lobbyNameText: {fileID: 157142466}
   lobbyCodeText: {fileID: 0}
 --- !u!1 &2022975710
