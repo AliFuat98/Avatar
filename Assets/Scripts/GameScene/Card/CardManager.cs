@@ -34,17 +34,16 @@ public class CardManager : NetworkBehaviour {
   }
 
   public void StartClient() {
-    // test için
+    // ali fuat
     NetworkManager.Singleton.StartClient();
   }
 
   public void StartHost() {
-    // test için
+    // ali fuat
     NetworkManager.Singleton.StartHost();
   }
 
   public override void OnNetworkSpawn() {
-    Debug.Log("on network spawn");
     ReadWordListFromFile();
     ChooseWordIndices();
     InitilizeCardList();

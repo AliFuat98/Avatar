@@ -15,8 +15,7 @@ public class SingleTeamPanelUI : MonoBehaviour {
   private void Awake() {
     try {
       GameMultiplayer.Instance.OnPlayerDataNetworkListChange += GameMultiplayer_OnPlayerDataNetworkListChange;
-    } catch (Exception e) {
-      Debug.Log(e.Message);
+    } catch (Exception) {
     }
   }
 
@@ -26,7 +25,7 @@ public class SingleTeamPanelUI : MonoBehaviour {
 
   private void Start() {
     if (teamId == -1) {
-      Debug.LogError("assign teamid of the team panel");
+      MessageManager.Instance.SetText("ERROR: assign teamid of the team panel");
       return;
     }
     UpdatePanelUI();
@@ -51,29 +50,45 @@ public class SingleTeamPanelUI : MonoBehaviour {
 
   private void UpdatePanelUI() {
     ClearExistingTexts();
+
+    // ali fuat check kaldýrýlabilir
     List<string> playerNames;
+    string localPlayerName;
     if (GameMultiplayer.Instance != null) {
       playerNames = GameMultiplayer.Instance.GetPlayerNamesWithTeamId(teamId);
+      localPlayerName = GameMultiplayer.Instance.GetPlayerName();
     } else {
       playerNames = new() {
         "testali","testebrar","testyusuf",
       };
+      localPlayerName = "test";
     }
 
     int childCount = 0;
     foreach (var name in playerNames) {
       GameObject tmpInstance = Instantiate(playerNameTextPrefab, teamNameContainer.transform);
-      tmpInstance.GetComponentInChildren<TextMeshProUGUI>().text = name;
+      if (name == localPlayerName) {
+        // ali fuat yýldýz deðiþtirelebilir.
+        tmpInstance.GetComponentInChildren<TextMeshProUGUI>().text = name + " (*)";
+      } else {
+        tmpInstance.GetComponentInChildren<TextMeshProUGUI>().text = name;
+      }
       childCount++;
     }
 
+    // ali fuat
     string tellerName;
     if (GameMultiplayer.Instance != null) {
       tellerName = GameMultiplayer.Instance.GetTellerNameWithTeamId(teamId);
     } else {
       tellerName = "testAhmet";
     }
-    tellerNameText.text = tellerName;
+
+    if (tellerName == localPlayerName) {
+      tellerNameText.text = tellerName + " (*)";
+    } else {
+      tellerNameText.text = tellerName;
+    }
 
     AdjustContainerHeights(childCount);
   }

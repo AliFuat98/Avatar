@@ -34,8 +34,7 @@ public class GiveClueUI : MonoBehaviour {
       return;
     }
 
-    ChatManager.Instance.AddNewClue($"{clueInput.text} {clueCount}");
-    Debug.Log("myturn: " + TurnManager.Instance.IsMyTurn());
+    ChatManager.Instance.AddNewClue($"{clueInput.text} {clueCount}", TurnManager.Instance.IsFirstTeamTurn);
     TurnManager.Instance.EndTurn();
     gameObject.SetActive(false);
   }

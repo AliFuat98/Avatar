@@ -51,22 +51,6 @@ public class GameMultiplayer : NetworkBehaviour {
     OnPlayerDataNetworkListChange?.Invoke(this, EventArgs.Empty);
   }
 
-  private void Update() {
-    if (Input.GetKeyDown(KeyCode.P)) {
-      foreach (var playerData in playerDataNetworkList) {
-        PrintPlayerData(playerData);
-      }
-    }
-  }
-
-  private void PrintPlayerData(PlayerData playerData) {
-    Debug.Log("------");
-    Debug.Log($"clientId: {playerData.clientId}");
-    Debug.Log($"playerName: {playerData.playerName}");
-    Debug.Log($"isTeller: {playerData.isTeller}");
-    Debug.Log($"teamId: {playerData.teamId}");
-  }
-
   #region Start Host
 
   public void StartHost() {

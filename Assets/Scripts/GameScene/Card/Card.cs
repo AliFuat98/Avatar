@@ -17,6 +17,9 @@ public class Card {
     IsOpen = false;
   }
 
+  public virtual void Choose() {
+  }
+
   public void SetCloseColor(Color color) {
     CloseColor = color;
   }
@@ -40,11 +43,19 @@ public class Card {
   public void OpenCard() {
     IsOpen = true;
   }
+
+  public void ResetVoter() {
+    VoterClientIDlist.Clear();
+  }
 }
 
 public class BlueCard : Card {
 
   public BlueCard(string word, Color color) : base(word, color) {
+  }
+
+  public override void Choose() {
+    TurnManager.Instance.DecreaseCardCount();
   }
 }
 
@@ -52,11 +63,20 @@ public class RedCard : Card {
 
   public RedCard(string word, Color color) : base(word, color) {
   }
+
+  public override void Choose() {
+    TurnManager.Instance.DecreaseCardCount();
+  }
 }
 
 public class BlackCard : Card {
 
   public BlackCard(string word, Color color) : base(word, color) {
+  }
+
+  public override void Choose() {
+    // ali fuat
+    MessageManager.Instance.SetText("black card is chosen");
   }
 }
 
@@ -64,10 +84,19 @@ public class PurpleCard : Card {
 
   public PurpleCard(string word, Color color) : base(word, color) {
   }
+
+  public override void Choose() {
+    TurnManager.Instance.DecreaseCardCount();
+  }
 }
 
 public class EmptyCard : Card {
 
   public EmptyCard(string word, Color color) : base(word, color) {
+  }
+
+  public override void Choose() {
+    // ali fuat
+    MessageManager.Instance.SetText("empty card is chosen");
   }
 }

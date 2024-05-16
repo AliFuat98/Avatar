@@ -1,3 +1,4 @@
+using System;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -5,6 +6,8 @@ using UnityEngine.UI;
 public class CardSingleUI : MonoBehaviour {
   [SerializeField] TextMeshProUGUI wordText;
   [SerializeField] Image CardBackground;
+
+  [SerializeField] GameObject ChosenCardImage;
 
   [SerializeField] GameObject voterCountContainer;
   [SerializeField] TextMeshProUGUI voterCountText;
@@ -15,8 +18,29 @@ public class CardSingleUI : MonoBehaviour {
 
   private void Awake() {
     choooseCardButton.onClick.AddListener(() => {
+      try {
+        // ali fuat
+        if (!TurnManager.Instance.IsMyTurn()) {
+          MessageManager.Instance.SetText("it is not your turn for card vote");
+          return;
+        }
+      } catch (Exception) {
+      }
+
+      if (card.IsOpen) {
+        MessageManager.Instance.SetText("Card is already opened");
+        return;
+      }
+
       ChooseCard();
+
+      TurnManager.Instance.OnTurnChanged += TurnManager_OnTurnChanged;
     });
+  }
+
+  private void TurnManager_OnTurnChanged(object sender, EventArgs e) {
+    card.ResetVoter();
+    voterCountContainer.SetActive(false);
   }
 
   public void InitilizeCard(Card card) {
@@ -26,9 +50,10 @@ public class CardSingleUI : MonoBehaviour {
     // store the color
     card.SetCloseColor(CardBackground.color);
 
-    //var playerData = GameMultiplayer.Instance.GetPlayerData();
-    bool isteller = false;
-    if (isteller) {
+    var playerData = GameMultiplayer.Instance.GetPlayerData();
+    // ali fuat
+    //bool isteller = false;
+    if (playerData.isTeller) {
       ShowCard();
     }
   }
@@ -42,30 +67,19 @@ public class CardSingleUI : MonoBehaviour {
   }
 
   public void ChooseCard() {
-    // sýra bizde deðilse return
-
-    // seçebilir mi
-
-    // show card
     CardManager.Instance.ChooseCard(card.PositionIndex);
-
-    // give the point to the team
   }
 
   public void ClientChooseCard(ulong senderClientId) {
-    // show the color of the card everyone
     ShowCard();
-
-    // give the point to the team
-    TurnManager.Instance.DecreaseCardCount();
+    card.Choose();
+    ChosenCardImage.SetActive(true);
   }
 
   public void Vote() {
     if (card.IsOpen) {
       return;
     }
-
-    // sýra bizde deðilse return
 
     CardManager.Instance.Vote(card.PositionIndex);
   }

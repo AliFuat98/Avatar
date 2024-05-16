@@ -49,6 +49,10 @@ public class TeamSelectUI : MonoBehaviour {
     });
 
     startGameButton.onClick.AddListener(() => {
+      if (!CanGameStart()) {
+        return;
+      }
+
       GameLobby.Instance.DeleteLobby();
       Loader.LoadNetwork(Loader.Scene.GameScene);
     });
@@ -56,11 +60,52 @@ public class TeamSelectUI : MonoBehaviour {
 
   private void Start() {
     try {
+      if (!NetworkManager.Singleton.IsHost) {
+        startGameButton.gameObject.SetActive(false);
+      }
+
       Lobby joinedLobby = GameLobby.Instance.GetJoinedLobby();
 
       lobbyNameText.text = $"Lobby Name \n {joinedLobby.Name}";
-    } catch (Exception e) {
-      Debug.Log(e.Message);
+    } catch (Exception) {
     }
+  }
+
+  private bool CanGameStart() {
+    var playerDataList = GameMultiplayer.Instance.GetPlayerDataList();
+
+    int tellerCount = 0;
+    int firstTeamCount = 0;
+    int secondTeamCount = 0;
+    foreach (var playerData in playerDataList) {
+      if (playerData.isTeller) {
+        tellerCount++;
+      }
+
+      if (playerData.teamId == 0 && !playerData.isTeller) {
+        firstTeamCount++;
+      }
+
+      if (playerData.teamId == 2 && !playerData.isTeller) {
+        secondTeamCount++;
+      }
+    }
+
+    if (tellerCount != 2) {
+      Debug.Log("teller is empty");
+      return false;
+    }
+
+    if (firstTeamCount < 1) {
+      Debug.Log("first team is empty");
+      return false;
+    }
+
+    if (secondTeamCount < 1) {
+      Debug.Log("second team is empty");
+      return false;
+    }
+
+    return true;
   }
 }

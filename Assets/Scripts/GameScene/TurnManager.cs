@@ -1,5 +1,7 @@
 using System;
+using TMPro;
 using Unity.Netcode;
+using UnityEngine;
 
 public class TurnManager : NetworkBehaviour {
   public static TurnManager Instance { get; private set; }
@@ -7,6 +9,8 @@ public class TurnManager : NetworkBehaviour {
   public event EventHandler OnTurnChanged;
 
   public event EventHandler OnRemaningCardCountChanged;
+
+  [SerializeField] private TextMeshProUGUI turnText;
 
   public bool IsFirstTeamTurn { get; private set; } = true;
   public bool IsTellerTurn { get; private set; } = true;
@@ -17,12 +21,19 @@ public class TurnManager : NetworkBehaviour {
     teamIdRemaningCardCount = new int[3] {
       8,0,7,
     };
+
+    turnText.text = "Red Team Teller";
   }
 
   public void DecreaseCardCount() {
     var index = IsFirstTeamTurn ? 0 : 2;
     teamIdRemaningCardCount[index]--;
     OnRemaningCardCountChanged?.Invoke(this, EventArgs.Empty);
+
+    if (teamIdRemaningCardCount[index] <= 0) {
+      // ali fuat
+      MessageManager.Instance.SetText(IsFirstTeamTurn ? "red team won" : "blue team won");
+    }
   }
 
   public int GetRemainingCardCount(int teamId) {
@@ -30,10 +41,21 @@ public class TurnManager : NetworkBehaviour {
   }
 
   public void EndTurn() {
+    EndTurnServerRpc();
+  }
+
+  [ServerRpc(RequireOwnership = false)]
+  public void EndTurnServerRpc() {
+    EndTurnClientRpc();
+  }
+
+  [ClientRpc]
+  private void EndTurnClientRpc() {
     // First team Teller ==> First team Finder
     if (IsFirstTeamTurn && IsTellerTurn) {
       IsTellerTurn = !IsTellerTurn;
       OnTurnChanged?.Invoke(this, EventArgs.Empty);
+      turnText.text = "Red Team Finder";
       return;
     }
 
@@ -42,6 +64,7 @@ public class TurnManager : NetworkBehaviour {
       IsFirstTeamTurn = !IsFirstTeamTurn;
       IsTellerTurn = !IsTellerTurn;
       OnTurnChanged?.Invoke(this, EventArgs.Empty);
+      turnText.text = "Blue Team Teller";
       return;
     }
 
@@ -49,6 +72,7 @@ public class TurnManager : NetworkBehaviour {
     if (!IsFirstTeamTurn && IsTellerTurn) {
       IsTellerTurn = !IsTellerTurn;
       OnTurnChanged?.Invoke(this, EventArgs.Empty);
+      turnText.text = "Blue Team Finder";
       return;
     }
 
@@ -57,15 +81,15 @@ public class TurnManager : NetworkBehaviour {
       IsFirstTeamTurn = !IsFirstTeamTurn;
       IsTellerTurn = !IsTellerTurn;
       OnTurnChanged?.Invoke(this, EventArgs.Empty);
+      turnText.text = "Red Team Teller";
       return;
     }
   }
 
   public bool IsMyTurn() {
-    //var playerData = GameMultiplayer.Instance.GetPlayerData();
+    var playerData = GameMultiplayer.Instance.GetPlayerData();
 
-    //return (IsFirstTeamTurn, playerData.teamId, IsTellerTurn, playerData.isTeller) switch {
-    return (IsFirstTeamTurn, 0, IsTellerTurn, true) switch {
+    return (IsFirstTeamTurn, playerData.teamId, IsTellerTurn, playerData.isTeller) switch {
       (true, 0, true, true) => true,
       (true, 0, false, false) => true,
       (false, 2, true, true) => true,
